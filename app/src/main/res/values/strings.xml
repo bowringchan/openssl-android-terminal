@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DebugNative</string>
+    <string name="app_name">openssl20250223</string>
     <string name="enter">Enter</string>
     <string name="reread_log">Reread (%d) log items from log cache file</string>
     <string name="mobile_info">%10$s %9$s running on %3$s %1$s (%2$s), Android %6$s (%7$s) API %4$d, ABI %5$s, (%8$s)</string>

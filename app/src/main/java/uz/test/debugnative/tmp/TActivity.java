@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.net.Uri;
+import android.os.Environment;
+import android.content.Intent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -23,6 +26,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import uz.test.debugnative.OpensslTerminalApplication;
 import uz.test.debugnative.R;
+import java.io.File;
 
 /**
  * Created by root on 19/06/17.
@@ -58,9 +62,11 @@ public class TActivity extends Activity {
         btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendCommand();
+                sendCommand("internal");
             }
         });
+        // Get the intent that started this activity
+        processNewIntent();
     }
 
     private void checkoutPermission() {
@@ -103,8 +109,16 @@ public class TActivity extends Activity {
         }*/
     }
 
-    private void sendCommand() {
-        String cm = edConsole.getText().toString();
+    private void sendCommand(String outsidecm) {
+        String cm=outsidecm;
+        String[] opensslin_str_list;
+        boolean isoutside=false;
+        if (outsidecm.equals("internal")) {
+            cm = edConsole.getText().toString();
+            isoutside=false;
+        }else{
+            isoutside=true;
+        }
         if (cm.isEmpty()) {
             return;
         }
@@ -180,6 +194,25 @@ public class TActivity extends Activity {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onNewIntent (Intent intent){
+        super.onNewIntent(intent);
+        setIntent(intent);
+        processNewIntent();
+    }
+
+    public void processNewIntent(){
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        if(data!=null) {
+            tvConsole.append(data.toString());
+            tvConsole.append("\n");
+            sendCommand("auto "+data.toString());
+        }else{
+            tvConsole.append("Launcher Activity or Intent.getData return NULL\n");
+        }
     }
 
 }
